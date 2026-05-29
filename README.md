@@ -194,6 +194,8 @@ Sell buffer: 0% to 3%
 
 There is also a tax and trading-friction tradeoff. Rules that trade more often may create more taxable events in a taxable account and may incur more spread/slippage costs. Rules that trade less often may be more tax-efficient, but they can also allow larger drawdowns if exits are delayed. The best buffer is therefore not only a return/drawdown choice; it can also depend on account type, tax treatment, execution costs, and whether the strategy is being run in a taxable or tax-advantaged account.
 
+For a taxable account, SMA timing may not be worth it if the investor can tolerate the large drawdowns from buy-and-hold TQQQ. The tested SMA edge over buy-and-hold was small on average CAGR, and frequent selling can give up tax deferral and long-term capital gains treatment. In a tax-advantaged account, this concern is less important, so the drawdown-control benefit of SMA timing may be more attractive.
+
 ## Files
 
 - `significant_sma_sweep.py` - main rolling-window parameter sweep.
