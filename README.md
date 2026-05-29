@@ -11,13 +11,11 @@ The goal is to find parameters that are robust across many possible start/end da
 
 These files were downloaded from 9Sig/Networthcast public data.
 
-## Main Scripts
+## Files
 
-- `significant_sma_sweep.py` - strongest methodology so far. Uses monthly rolling windows across 3, 5, 7, 10, and 12 year horizons, ranks every setup inside each window, then aggregates robustness.
-- `hundred_window_sweep.py` - randomized window robustness test.
-- `robust_sma_sweep.py` - fixed-period comparison.
-- `sma_buffer_sweep.py` - broad basic sweep.
-- `compare_9sig_period.py` and `match_9sig_check.py` - checks used to compare against the 9Sig site screenshots.
+- `significant_sma_sweep.py` - main robustness test. Uses monthly rolling windows across 3, 5, 7, 10, and 12 year horizons, ranks every setup inside each window, then aggregates robustness.
+- `data/` - source QQQ and TQQQ data.
+- `results/significant_sma_sweep_summary.csv` - final ranked results from the main sweep.
 
 ## Current Finding
 
@@ -34,6 +32,16 @@ Execution: next day after signal
 ```
 
 The full summary is in `results/significant_sma_sweep_summary.csv`.
+
+## Run
+
+Run from the repo root:
+
+```powershell
+python significant_sma_sweep.py
+```
+
+The script rewrites `results/significant_sma_sweep_summary.csv`.
 
 ## Tested Parameter Grid
 
