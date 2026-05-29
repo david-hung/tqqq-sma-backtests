@@ -137,6 +137,61 @@ Sell buffer: 0% to 3%
 
 The commonly used 200-day SMA is still reasonable. It is simple, widely followed, and less likely to look overfit. In this test, though, the 150-175 day range ranked better, likely because TQQQ benefits from catching rebounds earlier.
 
+## Buffer and Drawdown Relationship
+
+The buffer settings had a clearer relationship with drawdown than with CAGR. In this sweep, the sell buffer mattered more than the buy buffer.
+
+Correlation with average drawdown:
+
+```text
+Buy buffer vs. average drawdown:  +0.319
+Sell buffer vs. average drawdown: -0.678
+```
+
+Because drawdowns are negative numbers, this means:
+
+```text
+Higher buy buffer -> slightly less severe drawdowns
+Higher sell buffer -> much more severe drawdowns
+```
+
+Average drawdown by sell buffer:
+
+```text
+Sell 0%: -49.00%
+Sell 1%: -49.96%
+Sell 2%: -51.92%
+Sell 3%: -52.90%
+Sell 4%: -54.70%
+Sell 5%: -56.71%
+Sell 6%: -57.47%
+Sell 7%: -58.53%
+Sell 8%: -59.25%
+```
+
+Average drawdown by buy buffer:
+
+```text
+Buy 0%: -56.88%
+Buy 1%: -55.49%
+Buy 2%: -56.11%
+Buy 3%: -55.92%
+Buy 4%: -54.96%
+Buy 5%: -53.76%
+Buy 6%: -53.59%
+Buy 7%: -52.16%
+Buy 8%: -51.57%
+```
+
+The practical takeaway is that large sell buffers are dangerous for drawdown. They keep the strategy invested after QQQ has already broken below trend. Large buy buffers reduce drawdown somewhat by entering later, but they can also miss rebound gains.
+
+This helps explain why the strongest parameter area used low buy buffers and low-to-moderate sell buffers:
+
+```text
+Buy buffer: 0% to 1%
+Sell buffer: 0% to 3%
+```
+
 ## Files
 
 - `significant_sma_sweep.py` - main rolling-window parameter sweep.
