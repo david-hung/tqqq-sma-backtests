@@ -80,3 +80,27 @@ Each setup is ranked within each exact same window, then the ranks are aggregate
 | 8 | 175 | 2% | 3% | 13.5% | 56.3% | 40.09% | 32.25% | -48.66% |
 | 9 | 150 | 7% | 3% | 13.8% | 52.8% | 38.11% | 33.49% | -43.45% |
 | 10 | 175 | 1% | 2% | 12.8% | 49.1% | 40.54% | 32.82% | -49.22% |
+
+## Conclusion
+
+The most robust setup in this test was `175 SMA, 0/2`: buy TQQQ when QQQ closes above its 175-day SMA, and sell when QQQ closes 2% below that SMA. It had the best overall rank across 536 rolling windows and stayed in the top 10% of all tested setups in 72.2% of windows.
+
+The results suggest that the best general range is:
+
+```text
+SMA length: 150 to 175 days
+Buy buffer: 0% to 1%
+Sell buffer: 0% to 3%
+```
+
+The commonly used 200-day SMA is still defensible because it is simple, widely watched, and less likely to look overfit. However, in this test it appeared somewhat slow for TQQQ. The 150-175 day range captured rebounds earlier while still filtering major downtrends.
+
+For a practical default, this research favors:
+
+```text
+Primary choice: 175 SMA, 0/2
+Simpler aggressive alternative: 150 SMA, 0/0
+More conventional alternative: 200 SMA with small or no buffers
+```
+
+These results should be treated as backtest research, not a guarantee. TQQQ is a daily-reset leveraged ETF, and future market structure, volatility, rates, taxes, slippage, and execution timing can materially change real-world results.
