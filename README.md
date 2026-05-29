@@ -192,6 +192,8 @@ Buy buffer: 0% to 1%
 Sell buffer: 0% to 3%
 ```
 
+There is also a tax and trading-friction tradeoff. Rules that trade more often may create more taxable events in a taxable account and may incur more spread/slippage costs. Rules that trade less often may be more tax-efficient, but they can also allow larger drawdowns if exits are delayed. The best buffer is therefore not only a return/drawdown choice; it can also depend on account type, tax treatment, execution costs, and whether the strategy is being run in a taxable or tax-advantaged account.
+
 ## Files
 
 - `significant_sma_sweep.py` - main rolling-window parameter sweep.
