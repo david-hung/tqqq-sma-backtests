@@ -97,7 +97,7 @@ Buy-and-hold TQQQ average drawdown: -66.09%
 Buy-and-hold TQQQ worst drawdown: -81.66%
 ```
 
-The leading SMA setup, `175 SMA, 0/2`, had a similar average CAGR across the rolling windows but materially lower drawdowns:
+The leading SMA setup, `175 SMA, 0/2`, had only a slightly higher average CAGR across the rolling windows, but materially lower drawdowns:
 
 ```text
 175 SMA, 0/2 average CAGR: 42.29%
@@ -106,11 +106,31 @@ The leading SMA setup, `175 SMA, 0/2`, had a similar average CAGR across the rol
 175 SMA, 0/2 worst drawdown: -55.35%
 ```
 
-The SMA strategy is not trying to maximize one cherry-picked full-period CAGR. It is trying to find rules that hold up across many possible entry and exit windows while reducing drawdown exposure compared with simply holding TQQQ through every crash.
+The important result is not that the SMA strategy dramatically improves CAGR. It does not. The important result is that it produced a similar average CAGR to buy-and-hold while reducing drawdowns substantially across the tested rolling windows.
+
+In other words, the SMA strategy is better framed as a drawdown-control strategy than as a return-maximization strategy.
 
 ## Conclusion
 
 The most robust setup in this test was `175 SMA, 0/2`: buy TQQQ when QQQ closes above its 175-day SMA, and sell when QQQ closes 2% below that SMA. It had the best overall rank across 536 rolling windows and stayed in the top 10% of all tested setups in 72.2% of windows.
+
+Compared with buy-and-hold TQQQ, the average CAGR improvement was small:
+
+```text
+Buy-and-hold TQQQ average CAGR: 41.34%
+175 SMA, 0/2 average CAGR: 42.29%
+Difference: +0.95 percentage points
+```
+
+The drawdown improvement was much larger:
+
+```text
+Buy-and-hold TQQQ average drawdown: -66.09%
+175 SMA, 0/2 average drawdown: -49.39%
+
+Buy-and-hold TQQQ worst drawdown: -81.66%
+175 SMA, 0/2 worst drawdown: -55.35%
+```
 
 The results suggest that the best general range is:
 
@@ -129,5 +149,7 @@ Primary choice: 175 SMA, 0/2
 Simpler aggressive alternative: 150 SMA, 0/0
 More conventional alternative: 200 SMA with small or no buffers
 ```
+
+The conclusion is that the SMA filter may offer a better risk profile than buy-and-hold, but it should not be expected to massively outperform buy-and-hold on CAGR. TQQQ's largest gains often occur immediately after major drawdowns, and any trend-following strategy can miss part of those rebounds.
 
 These results should be treated as backtest research, not a guarantee. TQQQ is a daily-reset leveraged ETF, and future market structure, volatility, rates, taxes, slippage, and execution timing can materially change real-world results.
