@@ -83,16 +83,30 @@ Each setup is ranked within each exact same window, then the ranks are aggregate
 
 ## Baseline
 
-A simple buy-and-hold TQQQ baseline over the full real-era dataset had higher full-period growth, but much deeper drawdowns:
+A simple buy-and-hold TQQQ baseline was tested across the same 536 rolling windows used for the SMA strategies:
 
 ```text
-Period: 2010-02-11 to 2026-05-28
-Buy-and-hold TQQQ CAGR: 44.59%
-Buy-and-hold TQQQ final multiple: 406.1x
-Buy-and-hold TQQQ max drawdown: -81.66%
+Data period: 2010-02-11 to 2026-05-28
+Window lengths: 3, 5, 7, 10, and 12 years
+Total rolling windows: 536
+
+Buy-and-hold TQQQ average CAGR: 41.34%
+Buy-and-hold TQQQ median CAGR: 40.99%
+Buy-and-hold TQQQ 25th percentile CAGR: 33.58%
+Buy-and-hold TQQQ average drawdown: -66.09%
+Buy-and-hold TQQQ worst drawdown: -81.66%
 ```
 
-The SMA strategy is not trying to maximize the single full-period CAGR at any cost. It is trying to find rules that hold up across many possible entry and exit windows while reducing the worst drawdown exposure compared with simply holding TQQQ through every crash.
+The leading SMA setup, `175 SMA, 0/2`, had a similar average CAGR across the rolling windows but materially lower drawdowns:
+
+```text
+175 SMA, 0/2 average CAGR: 42.29%
+175 SMA, 0/2 25th percentile CAGR: 34.51%
+175 SMA, 0/2 average drawdown: -49.39%
+175 SMA, 0/2 worst drawdown: -55.35%
+```
+
+The SMA strategy is not trying to maximize one cherry-picked full-period CAGR. It is trying to find rules that hold up across many possible entry and exit windows while reducing drawdown exposure compared with simply holding TQQQ through every crash.
 
 ## Conclusion
 
