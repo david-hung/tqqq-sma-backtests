@@ -1,72 +1,71 @@
 # TQQQ SMA Buffer Backtests
 
-This folder contains the scripts and data used to compare QQQ SMA buffer rules for trading TQQQ.
+This repo tests whether a simple moving average filter on QQQ can improve a TQQQ strategy versus simply holding TQQQ.
 
-The goal is to find parameters that are robust across many possible start/end dates, not just the single best historical backtest.
+The short version: **the SMA filter did not show a large CAGR advantage over buy-and-hold TQQQ.** The stronger result was drawdown reduction. The best tested SMA setup had roughly similar average CAGR to buy-and-hold, but much lower average and worst drawdowns across rolling timeframes.
 
-## Data
+This is backtest research, not financial advice.
 
-- `data/synthetic-qqq.tsv`
-- `data/synthetic-tqqq.tsv`
+## Strategy
 
-These files were downloaded from 9Sig/Networthcast public data.
-
-## Files
-
-- `significant_sma_sweep.py` - main robustness test. Uses monthly rolling windows across 3, 5, 7, 10, and 12 year horizons, ranks every setup inside each window, then aggregates robustness.
-- `data/` - source QQQ and TQQQ data.
-- `results/significant_sma_sweep_summary.csv` - final ranked results from the main sweep.
-
-## Current Finding
-
-The most robust tested setup was:
+The tested strategy uses QQQ as the signal and TQQQ as the traded asset.
 
 ```text
-Trade: TQQQ
-Signal: QQQ
-SMA: 175 days
-Buy buffer: 0%
-Sell buffer: 2%
-Cash yield while out: 4%
-Execution: next day after signal
+Trade asset: TQQQ
+Signal asset: QQQ
+Risk-off asset: cash
+Cash yield while out: 4% annualized
+Execution: next trading day after the signal
 ```
 
-The full summary is in `results/significant_sma_sweep_summary.csv`.
+The SMA rule:
 
-## Run
-
-Run from the repo root:
-
-```powershell
-python significant_sma_sweep.py
+```text
+Buy TQQQ when QQQ closes above SMA * (1 + buy_buffer)
+Sell TQQQ when QQQ closes below SMA * (1 - sell_buffer)
 ```
 
-The script rewrites `results/significant_sma_sweep_summary.csv`.
+Example:
 
-## Tested Parameter Grid
+```text
+175 SMA, 0/2
+= buy when QQQ closes above its 175-day SMA
+= sell when QQQ closes 2% below its 175-day SMA
+```
+
+## What Was Tested
+
+The sweep tested 567 SMA/buffer combinations.
 
 ```text
 SMA lengths: 100, 125, 150, 175, 200, 225, 250
 Buy buffers: 0% through 8%
 Sell buffers: 0% through 8%
-Total setups: 567
 ```
 
-## Main Robustness Method
-
-`significant_sma_sweep.py` tests each setup across monthly rolling windows:
+Data:
 
 ```text
-Data period: 2010-02-11 to 2026-05-28
-Window lengths: 3, 5, 7, 10, and 12 years
-Total rolling windows: 536
-Execution: next-day after signal
-Cash yield: 4% annualized
+Period: 2010-02-11 to 2026-05-28
+Source files: data/synthetic-qqq.tsv and data/synthetic-tqqq.tsv
 ```
 
-Each setup is ranked within each exact same window, then the ranks are aggregated. This avoids treating one arbitrary timeframe as the answer.
+## Method
 
-## Top Results
+The main script is `significant_sma_sweep.py`.
+
+Instead of judging one start date, each setup was tested across monthly rolling windows:
+
+```text
+Window lengths: 3, 5, 7, 10, and 12 years
+Total rolling windows: 536
+```
+
+Within each rolling window, all 567 setups were tested on the exact same dates and ranked against each other. The final ranking favors setups that repeatedly rank near the top across many windows.
+
+Important: this is **not** a formal statistical significance test. The results are best interpreted as a robustness comparison.
+
+## Main Results
 
 | Rank | Setup | SMA | Buy | Sell | Avg Rank | Top 10% Rate | Avg CAGR | 25th %ile CAGR | Avg Drawdown |
 | ---: | ----- | --: | --: | ---: | -------: | -----------: | -------: | -------------: | -----------: |
@@ -82,58 +81,53 @@ Each setup is ranked within each exact same window, then the ranks are aggregate
 | 9 | SMA Strategy | 150 | 7% | 3% | 13.8% | 52.8% | 38.11% | 33.49% | -43.45% |
 | 10 | SMA Strategy | 175 | 1% | 2% | 12.8% | 49.1% | 40.54% | 32.82% | -49.22% |
 
-## Baseline
+`Avg Rank` means the average percentile rank across the rolling windows. Lower is better. An average rank of `9.0%` means the setup was usually near the top 9% of all tested parameter combinations.
 
-A simple buy-and-hold TQQQ baseline was tested across the same 536 rolling windows used for the SMA strategies:
+## Interpretation
+
+The best ranked setup was:
 
 ```text
-Data period: 2010-02-11 to 2026-05-28
-Window lengths: 3, 5, 7, 10, and 12 years
-Total rolling windows: 536
-
-Buy-and-hold TQQQ average CAGR: 41.34%
-Buy-and-hold TQQQ median CAGR: 40.99%
-Buy-and-hold TQQQ 25th percentile CAGR: 33.58%
-Buy-and-hold TQQQ average drawdown: -66.09%
-Buy-and-hold TQQQ worst drawdown: -81.66%
+175 SMA, 0/2
 ```
 
-The leading SMA setup, `175 SMA, 0/2`, had only a slightly higher average CAGR across the rolling windows, but materially lower drawdowns:
+But its CAGR was only slightly higher than buy-and-hold:
 
 ```text
-175 SMA, 0/2 average CAGR: 42.29%
-175 SMA, 0/2 25th percentile CAGR: 34.51%
-175 SMA, 0/2 average drawdown: -49.39%
-175 SMA, 0/2 worst drawdown: -55.35%
-```
-
-The important result is not that the SMA strategy dramatically improves CAGR. It does not. The important result is that it produced a similar average CAGR to buy-and-hold while reducing drawdowns substantially across the tested rolling windows.
-
-In other words, the SMA strategy is better framed as a drawdown-control strategy than as a return-maximization strategy.
-
-## Conclusion
-
-The most robust setup in this test was `175 SMA, 0/2`: buy TQQQ when QQQ closes above its 175-day SMA, and sell when QQQ closes 2% below that SMA. It had the best overall rank across 536 rolling windows and stayed in the top 10% of all tested setups in 72.2% of windows.
-
-Compared with buy-and-hold TQQQ, the average CAGR improvement was small:
-
-```text
-Buy-and-hold TQQQ average CAGR: 41.34%
+Buy-and-hold average CAGR: 41.34%
 175 SMA, 0/2 average CAGR: 42.29%
 Difference: +0.95 percentage points
 ```
 
-The drawdown improvement was much larger:
+That CAGR difference is small. I would not treat it as strong evidence that the SMA rule meaningfully outperforms buy-and-hold on returns.
+
+The drawdown difference is much larger:
 
 ```text
-Buy-and-hold TQQQ average drawdown: -66.09%
+Buy-and-hold average drawdown: -66.09%
 175 SMA, 0/2 average drawdown: -49.39%
 
-Buy-and-hold TQQQ worst drawdown: -81.66%
+Buy-and-hold worst drawdown: -81.66%
 175 SMA, 0/2 worst drawdown: -55.35%
 ```
 
-The results suggest that the best general range is:
+So the best summary is:
+
+```text
+The SMA strategy produced similar average CAGR to buy-and-hold,
+but with materially lower drawdowns in this backtest.
+```
+
+## Practical Takeaway
+
+This test does **not** prove that SMA timing is a magic return enhancer. The evidence is more modest:
+
+```text
+SMA timing may improve the risk profile of TQQQ.
+It may not significantly improve CAGR versus buy-and-hold.
+```
+
+The most robust parameter area was:
 
 ```text
 SMA length: 150 to 175 days
@@ -141,16 +135,24 @@ Buy buffer: 0% to 1%
 Sell buffer: 0% to 3%
 ```
 
-The commonly used 200-day SMA is still defensible because it is simple, widely watched, and less likely to look overfit. However, in this test it appeared somewhat slow for TQQQ. The 150-175 day range captured rebounds earlier while still filtering major downtrends.
+The commonly used 200-day SMA is still reasonable. It is simple, widely followed, and less likely to look overfit. In this test, though, the 150-175 day range ranked better, likely because TQQQ benefits from catching rebounds earlier.
 
-For a practical default, this research favors:
+## Files
 
-```text
-Primary choice: 175 SMA, 0/2
-Simpler aggressive alternative: 150 SMA, 0/0
-More conventional alternative: 200 SMA with small or no buffers
+- `significant_sma_sweep.py` - main rolling-window parameter sweep.
+- `data/` - source QQQ/TQQQ data files.
+- `results/significant_sma_sweep_summary.csv` - ranked output from the sweep.
+
+Run:
+
+```powershell
+python significant_sma_sweep.py
 ```
 
-The conclusion is that the SMA filter may offer a better risk profile than buy-and-hold, but it should not be expected to massively outperform buy-and-hold on CAGR. TQQQ's largest gains often occur immediately after major drawdowns, and any trend-following strategy can miss part of those rebounds.
+## Caveats
 
-These results should be treated as backtest research, not a guarantee. TQQQ is a daily-reset leveraged ETF, and future market structure, volatility, rates, taxes, slippage, and execution timing can materially change real-world results.
+- TQQQ is a daily-reset 3x leveraged ETF.
+- Backtests do not include taxes, trading costs, spreads, behavioral mistakes, or real-world execution friction.
+- The sample only covers real TQQQ history from 2010 through 2026.
+- Parameter sweeps can overfit, even when rolling windows are used.
+- Future volatility, rates, and market structure may differ from the tested period.
