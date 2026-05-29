@@ -81,6 +81,19 @@ Each setup is ranked within each exact same window, then the ranks are aggregate
 | 9 | 150 | 7% | 3% | 13.8% | 52.8% | 38.11% | 33.49% | -43.45% |
 | 10 | 175 | 1% | 2% | 12.8% | 49.1% | 40.54% | 32.82% | -49.22% |
 
+## Baseline
+
+A simple buy-and-hold TQQQ baseline over the full real-era dataset had higher full-period growth, but much deeper drawdowns:
+
+```text
+Period: 2010-02-11 to 2026-05-28
+Buy-and-hold TQQQ CAGR: 44.59%
+Buy-and-hold TQQQ final multiple: 406.1x
+Buy-and-hold TQQQ max drawdown: -81.66%
+```
+
+The SMA strategy is not trying to maximize the single full-period CAGR at any cost. It is trying to find rules that hold up across many possible entry and exit windows while reducing the worst drawdown exposure compared with simply holding TQQQ through every crash.
+
 ## Conclusion
 
 The most robust setup in this test was `175 SMA, 0/2`: buy TQQQ when QQQ closes above its 175-day SMA, and sell when QQQ closes 2% below that SMA. It had the best overall rank across 536 rolling windows and stayed in the top 10% of all tested setups in 72.2% of windows.
